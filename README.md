@@ -12,5 +12,5 @@
 
 ## Docker image repo/tag
 ```
-docker pull nomionz/ctc/0.01
+docker pull nomionz/ctc/0.0.1
 ```
