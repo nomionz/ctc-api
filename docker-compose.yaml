@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: passwd
+
+  api:
+    build: .
+    restart: always
+    environment:
+      POSTGRES_CONNECTION_STRING: postgres://postgres:passwd@db:5432/postgres
+    ports:
+      - 8080:8080
