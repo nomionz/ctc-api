@@ -9,3 +9,8 @@
    3. Include simple testing client in your repository
 2. Bundle your application and database as docker compose file
    1. All images must be public 
+
+## Docker image repo/tag
+```
+docker pull nomionz/ctc/0.01
+```
