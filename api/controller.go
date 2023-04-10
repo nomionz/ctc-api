@@ -31,13 +31,13 @@ func (c *Controller) Run(port string) error {
 func (c *Controller) setupRoutes() *gin.Engine {
 	router := gin.Default()
 	prods := router.Group("/products")
-	{
-		prods.GET("/", c.list)
-		prods.GET("/:id", c.get)
-		prods.POST("/", c.create)
-		prods.PATCH("/:id", c.update)
-		prods.DELETE("/:id", c.delete)
-	}
+
+	prods.GET("/", c.list)
+	prods.GET("/:id", c.get)
+	prods.POST("/", c.create)
+	prods.PATCH("/:id", c.update)
+	prods.DELETE("/:id", c.delete)
+
 	return router
 }
 
@@ -77,11 +77,11 @@ func (c *Controller) update(ctx *gin.Context) {
 		return
 	}
 	var prod models.Product
-	prod.ID = id
 	if err := ctx.ShouldBindJSON(&prod); err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
 		return
 	}
+	prod.ID = id
 	if err := models.Validate(&prod); err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
 		return

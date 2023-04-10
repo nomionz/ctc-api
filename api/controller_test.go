@@ -17,33 +17,33 @@ import (
 )
 
 type mockStore struct {
-	prods []models.Product
+	prods []*models.Product
 }
 
 var _ repositories.Repository = &mockStore{}
 
-func (m *mockStore) List() ([]models.Product, error) {
+func (m *mockStore) List() ([]*models.Product, error) {
 	return m.prods, nil
 }
 
 func (m *mockStore) Get(id int) (*models.Product, error) {
 	for _, p := range m.prods {
 		if p.ID == id {
-			return &p, nil
+			return p, nil
 		}
 	}
 	return nil, gorm.ErrRecordNotFound
 }
 
 func (m *mockStore) Create(prod *models.Product) error {
-	m.prods = append(m.prods, *prod)
+	m.prods = append(m.prods, prod)
 	return nil
 }
 
 func (m *mockStore) Update(prod *models.Product) error {
 	for i, p := range m.prods {
 		if p.ID == prod.ID {
-			m.prods[i] = *prod
+			m.prods[i] = prod
 			return nil
 		}
 	}
@@ -62,17 +62,17 @@ func (m *mockStore) Delete(id int) error {
 
 func NewMockStore() *mockStore {
 	return &mockStore{
-		prods: make([]models.Product, 0),
+		prods: make([]*models.Product, 0),
 	}
 }
 
 var (
-	validProd = models.Product{
+	validProd = &models.Product{
 		Name:   "test",
 		Price:  decimal.NewFromFloat(1.0),
 		Amount: 1,
 	}
-	invalidProd = models.Product{
+	invalidProd = &models.Product{
 		Name:   "a",
 		Price:  decimal.NewFromFloat(1.0),
 		Amount: -1,

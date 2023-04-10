@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	List() ([]models.Product, error)
+	List() ([]*models.Product, error)
 	Get(id int) (*models.Product, error)
 	Create(*models.Product) error
 	Update(*models.Product) error
@@ -32,9 +32,9 @@ func NewProductRepository(conn string) (*ProductRepository, error) {
 	return &ProductRepository{db: db}, nil
 }
 
-func (pr *ProductRepository) List() ([]models.Product, error) {
-	var res []models.Product
-	err := pr.db.Find(&models.Product{}).Error
+func (pr *ProductRepository) List() ([]*models.Product, error) {
+	var res []*models.Product
+	err := pr.db.Model(&models.Product{}).Find(&res).Error
 	if err != nil {
 		return nil, err
 	}
@@ -43,11 +43,9 @@ func (pr *ProductRepository) List() ([]models.Product, error) {
 
 func (pr *ProductRepository) Get(id int) (*models.Product, error) {
 	var res *models.Product
-	err := pr.db.First(res, id).Error
+	err := pr.db.Model(&models.Product{}).First(&res, id).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, gorm.ErrRecordNotFound
-		}
+		return nil, err
 	}
 	return res, nil
 }
@@ -55,31 +53,22 @@ func (pr *ProductRepository) Get(id int) (*models.Product, error) {
 func (pr *ProductRepository) Update(prod *models.Product) error {
 	err := pr.db.Save(prod).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return gorm.ErrRecordNotFound
-		}
 		return err
 	}
 	return nil
 }
 
 func (pr *ProductRepository) Delete(id int) error {
-	err := pr.db.Delete(&models.Product{}, id).Error
+	err := pr.db.Model(&models.Product{}).Delete(&models.Product{}, id).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return gorm.ErrRecordNotFound
-		}
 		return err
 	}
 	return nil
 }
 
 func (pr *ProductRepository) Create(prod *models.Product) error {
-	err := pr.db.Create(prod).Error
+	err := pr.db.Model(&models.Product{}).Create(prod).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return gorm.ErrRecordNotFound
-		}
 		return err
 	}
 	return nil
