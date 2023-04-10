@@ -7,11 +7,27 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: passwd
+    networks:
+      - db
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   api:
-    build: .
+    image: nomionz/ctc:0.0.1
     restart: always
     environment:
       POSTGRES_CONNECTION_STRING: postgres://postgres:passwd@db:5432/postgres
     ports:
       - 8080:8080
+    networks:
+      - db
+      - api
+
+networks:
+  api: 
+    driver: bridge
+  db: {}
+
+volumes:
+  db_data:
+    driver: local
